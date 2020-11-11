@@ -31,6 +31,10 @@ public class TransitService {
     @Value("${api_key}")
     public String googleApiKey;
 
+    
+
+
+
 
     private List<Bus> getBuses() {
 
@@ -101,7 +105,12 @@ public class TransitService {
         return nearbyBuses;
     }
 
+    public Location getPersonLocation(BusRequest request) {
 
+        Location personLocation = this.getCoordinates(request.address + " " + request.city);
+
+        return personLocation;
+    }
     
 
 }
