@@ -48,11 +48,15 @@ public class TransitService {
 
         // replace spaces with +'s (123 Main Street = 123+Main+Street)
         description = description.replace(" ", "+");
+        //api url for finding street locations
         String url = geocodingUrl + description + "GA&key=" + googleApiKey;
+        //system print url with street address
         System.out.println(url);
+        //used to create applications that consume RESTful Web Services
         RestTemplate restTemplate = new RestTemplate();
+
         GeocodingResponse response = restTemplate.getForObject(url, GeocodingResponse.class);
-        
+        //parse info from data
         return response.results.get(0).geometry.location;
     }
 
@@ -77,30 +81,34 @@ public class TransitService {
         // declaring variables
         //this allBuses variable, is the list of all the buses we get back from the getBuses method above
         List<Bus> allBuses = this.getBuses();
-
+        //get location for person location with getCoordinates method, find address and city
         Location personLocation = this.getCoordinates(request.address + " " + request.city);
 
         System.out.println(personLocation);
-
+        //Bus method create new ArrayList to find nearby buses for address search
         List<Bus> nearbyBuses = new ArrayList<>();
-
+        //for loop bus model bus for all buses
         for (Bus bus : allBuses) {
+            //new location for bus location
             Location busLocation = new Location();
+            //is this changing lat and long variables?
             busLocation.lat = bus.LATITUDE;
             busLocation.lng = bus.LONGITUDE;
-
+            //lat distance difference for user to bus.
             double latDistance = Double.parseDouble(busLocation.lat) - Double.parseDouble(personLocation.lat);
+            //long distance difference for user to bus.
             double lngDistance = Double.parseDouble(busLocation.lng) - Double.parseDouble(personLocation.lng);
-
+            //if statement calculating distance from person to nearest buses
             if(Math.abs(latDistance) <= 0.02 && Math.abs(lngDistance) <= 0.02) {
                 double distance = getDistance(busLocation, personLocation);
+                //if less than 1 mile I think it shows up as a nearby bus
                 if(distance <= 1) {
                     bus.distance = (double) Math.round(distance * 100) / 100;
                     nearbyBuses.add(bus);
                 }
             }
         }
-    
+        //sorting through nearby buses
         Collections.sort(nearbyBuses, new BusComparator());
         return nearbyBuses;
     }
