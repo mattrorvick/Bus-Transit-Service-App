@@ -5,6 +5,7 @@ import java.util.List;
 import com.tts.transitapp.model.Bus;
 import com.tts.transitapp.model.BusRequest;
 import com.tts.transitapp.service.TransitService;
+import com.tts.transitapp.model.Location;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,7 +23,6 @@ public class TransitController {
     public String getBusesPage(Model model) {
 
         model.addAttribute("request", new BusRequest());
-
         return "index";
     }
 
@@ -37,7 +37,12 @@ public class TransitController {
         model.addAttribute("buses", buses);
         model.addAttribute("request", request);
 
+        
+        Location userLocation = transitService.getPersonLocation(request);
+        model.addAttribute("userlocation", userLocation);
+
         return "index";
+
 
     }
 
