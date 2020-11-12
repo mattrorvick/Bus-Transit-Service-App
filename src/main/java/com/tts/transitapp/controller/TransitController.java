@@ -39,7 +39,8 @@ public class TransitController {
 
         
         Location userLocation = transitService.getPersonLocation(request);
-        model.addAttribute("userlocation", userLocation);
+        System.out.println(userLocation);
+        model.addAttribute("userLocation", userLocation);
 
         return "index";
 
